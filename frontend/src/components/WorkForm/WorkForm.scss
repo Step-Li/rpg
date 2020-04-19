@@ -1,0 +1,41 @@
+.WorkForm {
+    display: flex;
+    flex-direction: column;
+    
+    position: sticky;
+    top: 0;
+
+    width: 500px;
+    height: 100%;
+
+    h1 {
+        margin: 12px 0 4px;
+        color: white;
+        font-size: 28px;
+    }
+
+    label {
+        height: 24px;
+        margin: 8px 0 0;
+
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 24px;
+
+        color: white;
+    }
+
+    input, select, option {
+        height: 40px;
+        margin: 8px 0;
+        padding: 8px;
+
+        font-size: 14px;
+        line-height: 20px;
+
+        background: white;
+
+        border-radius: 12px;
+        border: none;
+    }
+}
