@@ -15,7 +15,7 @@ export class Work {
   adventureType?: 'scenario' | 'decoration';
 
   @Column()
-  year: number;
+  year: string;
 
   @Column()
   system: string;
@@ -25,4 +25,7 @@ export class Work {
 
   @Column()
   filePath: string;
+
+  @Column()
+  description: string;
 }

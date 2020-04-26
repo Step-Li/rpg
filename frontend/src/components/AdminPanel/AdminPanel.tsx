@@ -1,89 +1,61 @@
 import React from "react";
 
-import { IWorkProps } from "../../types/work";
-import { WorkCard } from "../WorkCard/WorkCard";
-import { getWorks, deleteWork } from "../../api/api";
-import { WorkForm } from "../WorkForm/WorkForm";
+import { getWorks as apiGetWorks, deleteWork } from "../../api/api";
 
 import './AdminPanel.scss';
+import { WorksList } from "../WorksList/WorksList";
+import { useSelector, useDispatch } from "react-redux";
+import { setNeedWorksFetch, updateWorks } from "../../redux/actions";
+import { IStore } from "../../redux/store";
+import { Typography, Breadcrumbs, Link, makeStyles, Theme, createStyles } from "@material-ui/core";
 
-interface IState {
-    loaded: boolean;
-    works: IWorkProps[];
-    editable?: IWorkProps;
-}
-
-export class AdminPanel extends React.Component<{}, IState> {
-    constructor(props: {}) {
-        super(props);
-
-        this.state = {
-            loaded: false,
-            works: [],
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        breadcrumbs: {
+            alignSelf: 'flex-start',
+            padding: 16,
+            paddingLeft: 24,
         }
+    }),
+);
 
-        this.deleteClickHandler = this.deleteClickHandler.bind(this);
-        this.getWorks = this.getWorks.bind(this);
-        this.startEditing = this.startEditing.bind(this);
+export function AdminPanel() {
+    const classes = useStyles();
+    const needWorksFetch = useSelector((store: IStore) => store.needWorksFetch);
+    const dispatch = useDispatch();
+
+    const getWorks = async () => {
+        const works = await apiGetWorks();
+
+        if (works) {
+            dispatch(updateWorks(works));
+        }
     }
 
-    componentDidMount() {
-        this.getWorks();
-    }
-
-    async deleteClickHandler(id: string) {
+    const deleteClickHandler = async (id: string) => {
         const deleted = await deleteWork(id);
 
         if (deleted) {
-            this.getWorks();
+            await getWorks();
         }
     }
 
-    async getWorks() {
-        const works = await getWorks();
-
-        if (works) {
-            this.setState({
-                loaded: true,
-                works,
-            });
-        } else {
-            this.setState({
-                loaded: true,
-            })
-        }
+    if (needWorksFetch) {
+        dispatch(setNeedWorksFetch(false));
+        getWorks();
     }
 
-    startEditing(id: string) {
-        console.log("start");
-        
-        this.setState(prevState => ({
-            editable: prevState.works.find(work => work.id === id),
-        }));
-    }
-
-    renderList() {
-        const { loaded, works } = this.state;
-        return loaded ? (
-            <div className="WorksList">
-                {works ? works.map(work => (
-                    <WorkCard
-                        key={work.id}
-                        {...work}
-                        onDeleteClick={this.deleteClickHandler}
-                        onEditClick={this.startEditing}
-                    />)
-                ) : 'Работы не найдены'}
-            </div>
-        ) : <div className="WorksList">Loading...</div>;
-    }
-
-    render() {
-        return (
-            <div className="AdminPanel">
-                <WorkForm onWorkPost={this.getWorks} editableWork={this.state.editable} />
-                {this.renderList()}
-            </div>
-        );
-    }
+    return (
+        <div className="AdminPanel">
+            <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
+                <Link color="inherit" href="/">
+                    RPG Кашевар
+                </Link>
+                <Typography color="textPrimary">Архив работ</Typography>
+            </Breadcrumbs>
+            <WorksList
+                onDeleteClick={deleteClickHandler}
+            />
+        </div>
+    );
 }

@@ -7,18 +7,15 @@ import { Connection } from 'typeorm';
 import { Work } from './work.entity';
 import { WorksModule } from './works.module';
 
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'user1',
-      password: '1234',
-      database: 'archive',
-      entities: [Work],
-      synchronize: true,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
     }),
+    TypeOrmModule.forRoot(),
     WorksModule,
   ],
   controllers: [AppController],

@@ -33,9 +33,11 @@ export async function postWork(work: IWork): Promise<void> {
 
 export async function updateWork(work: Partial<IWork>): Promise<void> {
     const formData = new FormData();
+    
     Object.entries(work).forEach(entry => {
+        console.log(typeof entry[1]);
         if (entry[1]) {
-            formData.append(entry[0], entry[1]);
+            formData.append(entry[0], typeof entry[1] === 'object' ? entry[1] : String(entry[1]));
         }
     });
 

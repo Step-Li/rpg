@@ -1,0 +1,39 @@
+.WorksFilters {
+    &-Filter {
+        width: 250px;
+        margin: 16px;
+
+        &.EvaluationFilter {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 4px 16px 0;
+            margin: 16px;
+
+            border: 1px solid rgba(0, 0, 0, 0.23);
+            border-radius: 4px;
+
+            .MuiSlider-root {
+                width: 90%;
+            }
+
+            .Label {
+                position: absolute;
+                top: 0;
+                left: 8px;
+                font-size: 12px;
+                transform: translate(0, -50%);
+                background-color: white;
+                padding: 4px;
+            }
+        }
+    }
+    
+    .MuiCardContent-root {
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;    
+    }
+}

@@ -2,11 +2,12 @@ export interface IWork {
     id?: string;
     title: string;
     year: string;
-    evaluation: string;
+    evaluation: number;
     system: string;
     nomination: 'game' | 'adventure';
     adventureType?: 'scenario' | 'decoration';
-    file: File;
+    file?: File;
+    description: string;
 }
 
 export interface IWorkProps extends Omit<IWork, 'file'> {

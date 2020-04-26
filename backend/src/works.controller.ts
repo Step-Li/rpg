@@ -4,22 +4,17 @@ import { Work } from './work.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 
-import * as fs from 'fs';
-import * as path from 'path';
-
 @Controller('works')
 export class WorksController {
     constructor(private worksService: WorksService) {}
 
     @Get()
     async findAll(): Promise<Work[]> {
-        console.log('get');
         return this.worksService.findAll();
     }
 
     @Delete()
     async delete(@Query() query): Promise<void> {
-        console.log(query);
         return this.worksService.remove(query.id);
     }
 
@@ -28,7 +23,7 @@ export class WorksController {
         FileInterceptor('file'),
     )
     async editWork(@UploadedFile() file, @Body() body): Promise<void> {
-        const { id, title, nomination, year, evaluation, system, adventureType } = body;
+        const { id, title, nomination, year, evaluation, system, adventureType, description } = body;
         if (!id || !title || !nomination || !year || !evaluation || !system) {
             throw new HttpException('Неверные параметры работы', HttpStatus.BAD_REQUEST);
         }
@@ -45,6 +40,7 @@ export class WorksController {
                 system,
                 adventureType,
                 filePath,
+                description,
             });
         }
 
@@ -56,6 +52,7 @@ export class WorksController {
             evaluation,
             system,
             adventureType,
+            description,
         });
     }
 
@@ -70,12 +67,10 @@ export class WorksController {
 
         const filePath = this.worksService.saveFile(file, body.title);
         
-        const { title, nomination, year, evaluation, system, adventureType } = body;
-        if (!title || !nomination || !year || !evaluation || !system) {
+        const { title, nomination, year, evaluation, system, adventureType, description } = body;
+        if (!title || !nomination || !year || !evaluation || !system || !description) {
             throw new HttpException('Неверные параметры работы', HttpStatus.BAD_REQUEST);
         }
-
-        console.log(adventureType);
 
         return this.worksService.insert({
             title,
@@ -83,8 +78,9 @@ export class WorksController {
             year,
             evaluation,
             system,
-            adventureType,
+            adventureType: adventureType === 'scenario' || adventureType === 'decoration' ? adventureType : null,
             filePath,
+            description,
         });
     }
 

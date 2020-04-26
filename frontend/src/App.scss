@@ -1,3 +1,18 @@
 * {
   box-sizing: border-box;
 }
+
+#root {
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  
+  min-height: 100vh;
+  padding-top: 64px;
+  background: #E9E9E9;
+  
+  @media (max-width: 600px) {
+    padding-top: 56px;
+  }
+}
+
