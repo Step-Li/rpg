@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import works from "./works";
+import work from "./work";
 import filters from "./filters";
 import systems from "./systems";
 import editableWork from "./editableWork";
@@ -12,5 +13,6 @@ export default combineReducers({
     systems,
     editableWork,
     needWorksFetch,
-    isAdmin
+    isAdmin,
+    work,
 });

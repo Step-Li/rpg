@@ -1,10 +1,14 @@
 import { IWorkProps } from "../types/work";
 import { IFilters } from "../types/filters";
-import { UPDATE_WORKS, UPDATE_FILTERS, IUpdateWorksAction, ISetEditableWorkAction, IUpdateFiltersAction, SET_EDITABLE_WORK, SET_NEED_WORKS_FETCH, ISetNeedWorksFetch, ISetIsAdmin, SET_IS_ADMIN } from "./actionTypes";
+import {
+    UPDATE_WORKS, UPDATE_FILTERS, IUpdateWorksAction, ISetEditableWorkAction,
+    IUpdateFiltersAction, SET_EDITABLE_WORK, SET_NEED_WORKS_FETCH,
+    ISetNeedWorksFetch, ISetIsAdmin, SET_IS_ADMIN, ISelectWorkAction, SELECT_WORK
+} from "./actionTypes";
 
 export const updateWorks = (works: IWorkProps[]): IUpdateWorksAction => ({
     type: UPDATE_WORKS,
-    works,
+    works: works.length ? works : [],
 });
 
 export const setEditableWork = (work: IWorkProps | null): ISetEditableWorkAction => ({
@@ -25,4 +29,9 @@ export const setNeedWorksFetch = (needWorksFetch: boolean): ISetNeedWorksFetch =
 export const setIsAdmin = (isAdmin: boolean): ISetIsAdmin => ({
     type: SET_IS_ADMIN,
     isAdmin,
+});
+
+export const selectWork = (work: IWorkProps | null): ISelectWorkAction => ({
+    type: SELECT_WORK,
+    work,
 });

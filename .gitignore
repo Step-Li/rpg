@@ -1,3 +1,5 @@
 node_modules
 files
 .DS_Store
+backend/ormconfig.json
+backend/src/modules/auth/constants.ts

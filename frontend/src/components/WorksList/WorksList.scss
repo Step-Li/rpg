@@ -1,14 +1,7 @@
 .WorksList {
+    width: 100%;
+
     @media (min-width: 700px) {
         min-width: 700px;
-        max-width: 950px;
-
-        display: grid;
-        grid-template-columns: 50% 50%;
-    }
-
-    .WorksFilters {
-        grid-column-start: 1;
-        grid-column-end: 3;
     }
 }

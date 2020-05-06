@@ -1,14 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Connection } from 'typeorm';
-import { Work } from './work.entity';
-import { WorksModule } from './works.module';
-
 import { ServeStaticModule } from '@nestjs/serve-static';
+
+import { Connection } from 'typeorm';
+import { WorksModule } from './modules/works/works.module';
+
 import { join } from 'path';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -17,9 +15,8 @@ import { join } from 'path';
     }),
     TypeOrmModule.forRoot(),
     WorksModule,
+    AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {
   constructor(private connection: Connection) {}

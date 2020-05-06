@@ -21,7 +21,7 @@ interface ISelectProps {
 }
 
 interface IStore extends Omit<Partial<IWork>, 'adventureType'> {
-    adventureType?: 'scenario' | 'decoration' | 'null';
+    adventureType?: 'scenario' | 'decoration' | null | 'null';
 }
 
 export function WorkForm(props: IProps) {

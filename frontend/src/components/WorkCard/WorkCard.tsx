@@ -1,19 +1,13 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Document, Page } from 'react-pdf/dist/entry.webpack';
-import Modal from 'react-modal';
-
-import { Card, CardContent, Typography, CardActions, Button, IconButton, Collapse } from "@material-ui/core";
+import { Card, CardContent, Typography, CardActions, IconButton, Collapse } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
-import RightIcon from '@material-ui/icons/ChevronRight';
-import LeftIcon from '@material-ui/icons/ChevronLeft';
 
 import { setEditableWork } from "../../redux/actions";
 import { IStore } from "../../redux/store";

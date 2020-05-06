@@ -3,5 +3,6 @@ export interface IFilters {
     maxEvaluation?: number;
     years?: string[];
     nomination?: string;
+    adventureType?: string | null;
     systems?: string[];
 }

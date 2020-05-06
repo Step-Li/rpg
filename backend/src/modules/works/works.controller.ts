@@ -1,24 +1,32 @@
-import { Controller, Get, Post, Body, HttpException, HttpStatus, Header, Delete, Query, UseInterceptors, UploadedFile, HttpCode, Res, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpException, HttpStatus, Header, Delete, Query, UseInterceptors, UploadedFile, HttpCode, Res, Put, UseGuards } from '@nestjs/common';
 import { WorksService } from './works.service';
 import { Work } from './work.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
+import { JwtAuthGuard } from '../auth/jwt.auth.guard';
 
-@Controller('works')
+@Controller()
 export class WorksController {
     constructor(private worksService: WorksService) {}
 
-    @Get()
-    async findAll(): Promise<Work[]> {
+    @Get('works')
+    async getWorks(): Promise<Work[]> {
         return this.worksService.findAll();
     }
 
-    @Delete()
+    @Get('work')
+    async getWork(@Query() query): Promise<Work> {
+        return this.worksService.findOne(query.id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('work')
     async delete(@Query() query): Promise<void> {
         return this.worksService.remove(query.id);
     }
 
-    @Put()
+    @UseGuards(JwtAuthGuard)
+    @Put('work')
     @UseInterceptors(
         FileInterceptor('file'),
     )
@@ -56,7 +64,8 @@ export class WorksController {
         });
     }
 
-    @Post()
+    @UseGuards(JwtAuthGuard)
+    @Post('work')
     @UseInterceptors(
         FileInterceptor('file'),
     )

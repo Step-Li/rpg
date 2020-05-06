@@ -2,6 +2,11 @@
     @media (max-width: 600px) {
         display: none;
     }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
 }
 
 .MenuBurger.MuiButtonBase-root {

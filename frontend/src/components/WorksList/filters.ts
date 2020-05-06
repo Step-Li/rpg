@@ -37,6 +37,16 @@ export function getFilterByNomination(nomination: string | undefined) {
     }
 }
 
+export function getFilterByAdventureType(adventureType: string | null | undefined) {
+    if (adventureType === undefined) {
+        return (_: IWorkProps) => true;
+    }
+
+    return (work: IWorkProps) => {
+        return adventureType === work.adventureType;
+    }
+}
+
 export function getFilterBySystems(systems: string[] | undefined) {
     if (!systems || systems.length === 0) {
         return (_: IWorkProps) => true;

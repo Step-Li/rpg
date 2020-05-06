@@ -6,6 +6,7 @@ export const SET_EDITABLE_WORK = 'SET_EDITABLE_WORK';
 export const UPDATE_FILTERS = 'UPDATE_FILTERS';
 export const SET_NEED_WORKS_FETCH = 'SET_NEED_WORKS_FETCH';
 export const SET_IS_ADMIN = 'SET_IS_ADMIN';
+export const SELECT_WORK = 'SELECT_WORK';
 
 interface IAction {
     type: string;
@@ -29,4 +30,8 @@ export interface ISetNeedWorksFetch extends IAction {
 
 export interface ISetIsAdmin extends IAction {
     isAdmin: boolean,
+}
+
+export interface ISelectWorkAction extends IAction {
+    work: IWorkProps | null,
 }

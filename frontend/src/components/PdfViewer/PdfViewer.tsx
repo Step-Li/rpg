@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 
 import { Document, Page } from 'react-pdf/dist/entry.webpack';
-import { Button, Modal, IconButton, CardActions, Backdrop, makeStyles, Theme, createStyles, Typography } from "@material-ui/core";
+import { IconButton, Modal, CardActions, Backdrop, makeStyles, Theme, createStyles, Typography } from "@material-ui/core";
 
 import CloseIcon from '@material-ui/icons/Close';
 import RightIcon from '@material-ui/icons/ChevronRight';
 import LeftIcon from '@material-ui/icons/ChevronLeft';
+import EyeIcon from '@material-ui/icons/Visibility';
 
 interface IProps {
     file: string | {
@@ -59,7 +60,9 @@ export function PdfViewer(props: IProps) {
 
     return (
         <>
-            <Button size="small" onClick={openShowModal}>Посмотреть</Button>
+            <IconButton onClick={openShowModal}>
+                <EyeIcon />
+            </IconButton>
             <Modal
                 className={classes.modal}
                 open={isShowModalOpen}

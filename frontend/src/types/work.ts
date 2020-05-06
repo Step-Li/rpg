@@ -5,7 +5,7 @@ export interface IWork {
     evaluation: number;
     system: string;
     nomination: 'game' | 'adventure';
-    adventureType?: 'scenario' | 'decoration';
+    adventureType?: 'scenario' | 'decoration' | null;
     file?: File;
     description: string;
 }

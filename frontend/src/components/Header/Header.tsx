@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 
 import './Header.scss';
-import { Hidden, Drawer, Divider, List, ListItem,
+import {
+    Hidden, Drawer, Divider, List, ListItem,
     ListItemIcon, ListItemText, makeStyles, Theme, createStyles,
-    AppBar, Toolbar, IconButton, Typography, Button } from "@material-ui/core";
+    AppBar, Toolbar, IconButton, Typography, Button
+} from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -47,10 +50,18 @@ export function Header() {
                         RPG КАШЕВАР
                     </Typography>
                     <div className={`${classes.menu} MenuTabs`}>
-                        <Button color="inherit">О нас</Button>
-                        <Button color="inherit">Архив</Button>
-                        <Button color="inherit">Актуальное</Button>
-                        <Button color="inherit">VK</Button>
+                        <Link to="/about">
+                            <Button color="inherit">О нас</Button>
+                        </Link>
+                        <Link to="/archive">
+                            <Button color="inherit">Архив</Button>
+                        </Link>
+                        <Link to="/actual">
+                            <Button color="inherit">Актуальное</Button>
+                        </Link>
+                        <a href="https://vk.com/rpgkashevar" target="_blank">
+                            <Button color="inherit">VK</Button>
+                        </a>
                     </div>
                 </Toolbar>
             </AppBar>
