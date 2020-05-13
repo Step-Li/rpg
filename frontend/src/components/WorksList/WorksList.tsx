@@ -1,12 +1,6 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { createStyles, makeStyles, Theme, Modal, Backdrop, Paper } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from '@material-ui/icons/Close';
-
-// import { WorkCard } from "../WorkCard/WorkCard";
-import { WorkForm } from "../WorkForm/WorkForm";
 import { WorksFilters } from "../WorksFilters/WorksFilters";
 import {
     getFilterByEvalutaion,
@@ -16,73 +10,30 @@ import {
     getFilterByAdventureType
 } from "./filters";
 
-import { IWorkProps } from "../../types/work";
 import { IStore } from "../../redux/store";
-import { setEditableWork } from "../../redux/actions";
+
+import { WorksTable } from "../WorksTable/WorksTable";
+import { EditWork } from "../EditWork/EditWork";
+import { WorksListNoWorks } from "./__NoWorks/WorkListNoWorks";
+import { WorkCard } from "../WorkCard/WorkCard";
 
 import './WorksList.scss';
-import WorksTable from "../WorksTable/WorksTable";
 
-interface IProps {
-    onDeleteClick: (id: string) => void;
-}
+export function WorksList() {
+    useEffect(() => {
+        const resizeHandler = () => {
+            setIsTouch(document.body.clientWidth <= 600);
+        };
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        closeButton: {
-            position: 'absolute',
-            top: 10,
-            right: 10,
-        },
-        addButton: {
-            gridColumnStart: 1,
-            gridColumnEnd: 3,
-            margin: 4,
-        },
-        modal: {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        paper: {
-            padding: 20,
+        window.addEventListener('resize', resizeHandler);
+
+        return () => {
+            window.removeEventListener('resize', resizeHandler);
         }
-    })
-);
-
-export function WorksList(props: IProps) {
-    const classes = useStyles();
+    });
     const works = useSelector((state: IStore) => state.works);
     const filters = useSelector((state: IStore) => state.filters);
-    const editableWork = useSelector((state: IStore) => state.editableWork);
-    const dispatch = useDispatch();
-
-    const closeModal = () => dispatch(setEditableWork(null));
-
-    const renderEditModal = (editableWork: IWorkProps) => {
-        return (
-            <Modal
-                className={classes.modal}
-                open
-                onClose={closeModal}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
-            >
-                <>
-                    <IconButton onClick={closeModal} aria-label="edit-close" className={classes.closeButton}>
-                        <CloseIcon />
-                    </IconButton>
-                    <WorkForm onWorkPost={closeModal} editableWork={editableWork} />
-                </>
-            </Modal>
-        );
-    }
-
-    const { onDeleteClick } = props;
+    const [isTouch, setIsTouch] = useState(document.body.clientWidth <= 600);
 
     const filteredWorks = works
         .filter(getFilterByEvalutaion(filters.evaluationRange))
@@ -91,13 +42,17 @@ export function WorksList(props: IProps) {
         .filter(getFilterByAdventureType(filters.adventureType))
         .filter(getFilterBySystems(filters.systems));
 
+    const worksList = () => isTouch ? (
+        filteredWorks.map(work => <WorkCard key={work.id} {...work} />)
+    ) : <WorksTable works={filteredWorks} />;
+
     return (
         <div className="WorksList">
             <WorksFilters />
-            {editableWork ? renderEditModal(editableWork) : null}
+            <EditWork />
             {filteredWorks.length > 0 ?
-                <WorksTable works={filteredWorks} onDeleteClick={onDeleteClick} />
-                : <Paper className={classes.paper}>Работы не найдены </Paper>}
+                worksList()
+                : <WorksListNoWorks />}
         </div>
     )
 }

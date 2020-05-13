@@ -1,14 +1,26 @@
-
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Work } from './work.entity';
 
+import { translit } from '../../utils/translit';
+import { Readable } from 'stream';
+import { promisify } from 'util';
+
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { translit } from '../../utils/translit';
-import { Readable } from 'stream';
+
+const exists = promisify(fs.exists);
+const unlink = promisify(fs.unlink);
+const writeFile = promisify(fs.writeFile);
+const readFile = promisify(fs.readFile);
+const rename = promisify(fs.rename);
+
+function createFilePath(name: string) {
+    const translittedName = translit(name).trim() + '.pdf';
+    return path.resolve(os.homedir(), 'files', translittedName);
+}
 
 @Injectable()
 export class WorksService {
@@ -37,24 +49,36 @@ export class WorksService {
         await this.worksRepository.delete(id);
     }
 
-    saveFile(file: any, workname: string): string {
-        const dirName = path.resolve(os.homedir(), 'workspace', 'RPG', 'files', workname);
-
-        if (!fs.existsSync(dirName)) {
-            fs.mkdirSync(dirName);
+    async saveFile(file: any, workname: string, oldPath?: string): Promise<string> {
+        if (await exists(oldPath)) {
+            await unlink(oldPath);
         }
 
-        const translittedName = translit(file.originalname);
+        const filePath = createFilePath(workname);
 
-        const fileName = path.resolve(dirName, translittedName);
-
-        if (fs.existsSync(fileName)) {
-            fs.unlinkSync(fileName);
+        if (await exists(filePath)) {
+            await unlink(filePath);
         }
 
-        fs.writeFileSync(fileName, Buffer.from(file.buffer));
+        await writeFile(filePath, Buffer.from(file.buffer));
 
-        return fileName;
+        return filePath;
+    }
+
+    async deleteFile(filePath: string) {
+        if (await exists(filePath)) {
+            await unlink(filePath);
+        }
+    }
+
+    async renameFile(oldPath: string, newName: string): Promise<string | undefined> {
+        if (await exists(oldPath)) {
+            const newPath = createFilePath(newName);
+
+            await rename(oldPath, newPath);
+
+            return newPath;
+        }
     }
 
     async getFilePath(workId: string): Promise<string> {
@@ -63,10 +87,8 @@ export class WorksService {
         return work.filePath;
     }
 
-    async getFileBuffer(workId: string): Promise<Buffer> {
-        const work = await this.worksRepository.findOne(workId);
-
-        return fs.readFileSync(work.filePath);
+    async getFileBuffer(filePath: string): Promise<Buffer> {
+        return readFile(filePath);
     }
 
     getReadableStream(buffer: Buffer): Readable {

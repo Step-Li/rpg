@@ -3,6 +3,8 @@ import { Button, Modal, makeStyles, Theme, createStyles, Backdrop, IconButton } 
 import CloseIcon from '@material-ui/icons/Close';
 
 import { WorkForm } from "../WorkForm/WorkForm";
+import { useSelector } from "react-redux";
+import { IStore } from "../../redux/store";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,16 +25,17 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export function AddWork() {
+export function AddWork(props: { variant?: 'outlined' | 'text' }) {
     const classes = useStyles();
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const isAdmin = useSelector((store: IStore) => store.isAdmin);
 
     const openAddModal = () => setIsAddModalOpen(true);
     const closeAddModal = () => setIsAddModalOpen(false);
 
-    return (
+    return isAdmin ? (
         <>
-            <Button onClick={openAddModal} className={classes.addButton}>Добавить работу</Button>
+            <Button variant={props.variant} onClick={openAddModal} className={classes.addButton}>Добавить работу</Button>
             <Modal
                 className={classes.modal}
                 open={isAddModalOpen}
@@ -51,5 +54,5 @@ export function AddWork() {
                 </>
             </Modal>
         </>
-    );
+    ) : null;
 }

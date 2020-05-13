@@ -1,6 +1,6 @@
 import React from "react";
 
-import { getWorks as apiGetWorks, deleteWork } from "../../api/api";
+import { getWorks as apiGetWorks } from "../../api/api";
 
 import './AdminPanel.scss';
 import { WorksList } from "../WorksList/WorksList";
@@ -32,14 +32,6 @@ export function AdminPanel() {
         }
     }
 
-    const deleteClickHandler = async (id: string) => {
-        const deleted = await deleteWork(id);
-
-        if (deleted) {
-            await getWorks();
-        }
-    }
-
     if (needWorksFetch) {
         dispatch(setNeedWorksFetch(false));
         getWorks();
@@ -53,9 +45,7 @@ export function AdminPanel() {
                 </Link>
                 <Typography color="textPrimary">Архив работ</Typography>
             </Breadcrumbs>
-            <WorksList
-                onDeleteClick={deleteClickHandler}
-            />
+            <WorksList />
         </div>
     );
 }

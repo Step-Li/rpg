@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, HttpException, HttpStatus, Header, Delete, Query, UseInterceptors, UploadedFile, HttpCode, Res, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpException, HttpStatus, Delete, Query, UseInterceptors, UploadedFile, HttpCode, Res, Put, UseGuards } from '@nestjs/common';
 import { WorksService } from './works.service';
 import { Work } from './work.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../auth/jwt.auth.guard';
+
+import { translit } from '../../utils/translit';
 
 @Controller()
 export class WorksController {
@@ -22,7 +24,10 @@ export class WorksController {
     @UseGuards(JwtAuthGuard)
     @Delete('work')
     async delete(@Query() query): Promise<void> {
-        return this.worksService.remove(query.id);
+        const filePath = await (await this.worksService.findOne(query.id)).filePath;
+
+        await this.worksService.remove(query.id);
+        await this.worksService.deleteFile(filePath);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -32,12 +37,16 @@ export class WorksController {
     )
     async editWork(@UploadedFile() file, @Body() body): Promise<void> {
         const { id, title, nomination, year, evaluation, system, adventureType, description } = body;
+        
         if (!id || !title || !nomination || !year || !evaluation || !system) {
             throw new HttpException('Неверные параметры работы', HttpStatus.BAD_REQUEST);
         }
 
+        const oldWork = await this.worksService.findOne(id);
+
         if (file) {
-            const filePath = this.worksService.saveFile(file, body.title);
+            const oldFilePath = oldWork.filePath;
+            const filePath = await this.worksService.saveFile(file, body.title, oldFilePath);
 
             return this.worksService.update({
                 id,
@@ -51,6 +60,12 @@ export class WorksController {
                 description,
             });
         }
+        
+        let filePath;
+
+        if (oldWork.title !== title) {
+            filePath = await this.worksService.renameFile(oldWork.filePath, title);
+        }
 
         return this.worksService.update({
             id,
@@ -61,6 +76,7 @@ export class WorksController {
             system,
             adventureType,
             description,
+            filePath,
         });
     }
 
@@ -70,11 +86,7 @@ export class WorksController {
         FileInterceptor('file'),
     )
     async insertWork(@UploadedFile() file, @Body() body): Promise<void> {
-
-        console.log('files', file);
-        console.log('body', body);
-
-        const filePath = this.worksService.saveFile(file, body.title);
+        const filePath = await this.worksService.saveFile(file, body.title);
         
         const { title, nomination, year, evaluation, system, adventureType, description } = body;
         if (!title || !nomination || !year || !evaluation || !system || !description) {
@@ -95,11 +107,13 @@ export class WorksController {
 
     @Get('download-file')
     async getFile(@Query() query, @Res() response: Response) {
-        const buffer = await this.worksService.getFileBuffer(query.id);
+        const work = await this.worksService.findOne(query.id);
+        const buffer = await this.worksService.getFileBuffer(work.filePath);
         const stream = this.worksService.getReadableStream(buffer);
 
         response.set({
             'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename=' + translit(work.title) + '.pdf',
             'Content-Length': buffer.length,
         });
 

@@ -3,15 +3,16 @@ import React, { useState } from "react";
 import './Header.scss';
 import {
     Hidden, Drawer, Divider, List, ListItem,
-    ListItemIcon, ListItemText, makeStyles, Theme, createStyles,
+    ListItemText, makeStyles, Theme, createStyles,
     AppBar, Toolbar, IconButton, Typography, Button
 } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import { Link } from "react-router-dom";
 
+import { MENU_TABS } from '../../constants/menu';
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        // necessary for content to be below app bar
         toolbar: theme.mixins.toolbar,
         appBar: {
             display: 'flex',
@@ -50,15 +51,9 @@ export function Header() {
                         RPG КАШЕВАР
                     </Typography>
                     <div className={`${classes.menu} MenuTabs`}>
-                        <Link to="/about">
-                            <Button color="inherit">О нас</Button>
-                        </Link>
-                        <Link to="/archive">
-                            <Button color="inherit">Архив</Button>
-                        </Link>
-                        <Link to="/actual">
-                            <Button color="inherit">Актуальное</Button>
-                        </Link>
+                        {MENU_TABS.map(({ link, tab }) => <Link to={link}>
+                            <Button color="inherit">{tab}</Button>
+                        </Link>)}
                         <a href="https://vk.com/rpgkashevar" target="_blank">
                             <Button color="inherit">VK</Button>
                         </a>
@@ -74,12 +69,19 @@ export function Header() {
                         <div>
                             <div className={classes.toolbar} />
                             <Divider />
-                            <List>
-                                {['О нас', 'Архив', 'Актуальное', 'VK'].map((text) => (
-                                    <ListItem button key={text}>
-                                        <ListItemText primary={text} />
-                                    </ListItem>
+                            <List className="MenuToolbar">
+                                {MENU_TABS.map(({ link, tab }) => (
+                                    <Link to={link}>
+                                        <ListItem button key={tab}>
+                                            <ListItemText color="inherit" primary={tab} />
+                                        </ListItem>
+                                    </Link>
                                 ))}
+                                <a href="https://vk.com/rpgkashevar" target="_blank">
+                                    <ListItem button>
+                                        <ListItemText primary="VK" />
+                                    </ListItem>
+                                </a>
                             </List>
                             <Divider />
                         </div>

@@ -18,12 +18,11 @@ function App() {
       <Header />
       <Switch>
         <Route path='/archive' component={AdminPanel} />
-        <Route path='/about' component={AboutPage} />
         <Route path='/actual' component={ActualPage} />
         <Route path='/manager' component={AuthorizationPanel} />
         <Route path='/work/:id' component={WorkPage} />
+        <Route path='/' component={AboutPage} />
         <Route component={Page404} />
-        {/* <Redirect from='/' to='/404' /> */}
       </Switch>
     </ThemeProvider>
   );
