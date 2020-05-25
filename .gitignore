@@ -3,3 +3,5 @@ files
 .DS_Store
 backend/ormconfig.json
 backend/src/modules/auth/constants.ts
+backend/ssl
+frontend/sitemapBuilder.js

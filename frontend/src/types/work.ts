@@ -7,10 +7,18 @@ export interface IWork {
     nomination: 'game' | 'adventure';
     adventureType?: 'scenario' | 'decoration' | null;
     file?: File;
-    description: string;
+    description?: string;
+    finalUrl?: string;
+    imgUrl?: string;
 }
 
 export interface IWorkProps extends Omit<IWork, 'file'> {
     id: string;
     filePath: string;
+    reviews?: IReview[];
+}
+
+export interface IReview {
+    text: string;
+    author: string;
 }

@@ -30,7 +30,7 @@ export function WorksList() {
         return () => {
             window.removeEventListener('resize', resizeHandler);
         }
-    });
+    }, []);
     const works = useSelector((state: IStore) => state.works);
     const filters = useSelector((state: IStore) => state.filters);
     const [isTouch, setIsTouch] = useState(document.body.clientWidth <= 600);

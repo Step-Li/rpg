@@ -6,10 +6,15 @@ import { Response } from 'express';
 import { JwtAuthGuard } from '../auth/jwt.auth.guard';
 
 import { translit } from '../../utils/translit';
+import { ReviewsService } from '../reviews/reviews.service';
+import { parseWork } from '../../utils/parseWork';
 
 @Controller()
 export class WorksController {
-    constructor(private worksService: WorksService) {}
+    constructor(
+        private worksService: WorksService,
+        private reviewsService: ReviewsService,
+    ) {}
 
     @Get('works')
     async getWorks(): Promise<Work[]> {
@@ -24,9 +29,12 @@ export class WorksController {
     @UseGuards(JwtAuthGuard)
     @Delete('work')
     async delete(@Query() query): Promise<void> {
-        const filePath = await (await this.worksService.findOne(query.id)).filePath;
+        const work = await this.worksService.findOne(query.id);
+        const filePath = work.filePath;
 
-        await this.worksService.remove(query.id);
+        work.reviews.forEach(review => this.reviewsService.delete(review.rewiewId))
+
+        await this.worksService.delete(query.id);
         await this.worksService.deleteFile(filePath);
     }
 
@@ -36,48 +44,34 @@ export class WorksController {
         FileInterceptor('file'),
     )
     async editWork(@UploadedFile() file, @Body() body): Promise<void> {
-        const { id, title, nomination, year, evaluation, system, adventureType, description } = body;
-        
-        if (!id || !title || !nomination || !year || !evaluation || !system) {
-            throw new HttpException('Неверные параметры работы', HttpStatus.BAD_REQUEST);
+        const { errors, work } = parseWork(body);
+
+        if (!body.id) {
+            errors.push('не указан id редактируемой работы');
         }
 
-        const oldWork = await this.worksService.findOne(id);
+        if (errors.length > 0) {
+            throw new HttpException('Неверные параметры работы: ' + errors.join(', '), HttpStatus.BAD_REQUEST);
+        }
+
+        const oldWork = await this.worksService.findOne(work.id);
+        const newWork: Partial<Work> = {
+            ...work,
+            filePath: oldWork.filePath,
+        }
 
         if (file) {
             const oldFilePath = oldWork.filePath;
-            const filePath = await this.worksService.saveFile(file, body.title, oldFilePath);
+            newWork.filePath = await this.worksService.saveFile(file, body.title, oldFilePath);
 
-            return this.worksService.update({
-                id,
-                title,
-                nomination,
-                year,
-                evaluation,
-                system,
-                adventureType,
-                filePath,
-                description,
-            });
-        }
-        
-        let filePath;
-
-        if (oldWork.title !== title) {
-            filePath = await this.worksService.renameFile(oldWork.filePath, title);
+            return this.worksService.update(newWork);
         }
 
-        return this.worksService.update({
-            id,
-            title,
-            nomination,
-            year,
-            evaluation,
-            system,
-            adventureType,
-            description,
-            filePath,
-        });
+        if (oldWork.title !== newWork.title) {
+            newWork.filePath = await this.worksService.renameFile(oldWork.filePath, newWork.title);
+        }
+
+        return this.worksService.update(newWork);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -86,22 +80,17 @@ export class WorksController {
         FileInterceptor('file'),
     )
     async insertWork(@UploadedFile() file, @Body() body): Promise<void> {
-        const filePath = await this.worksService.saveFile(file, body.title);
+        const { errors, work } = parseWork(body);
         
-        const { title, nomination, year, evaluation, system, adventureType, description } = body;
-        if (!title || !nomination || !year || !evaluation || !system || !description) {
-            throw new HttpException('Неверные параметры работы', HttpStatus.BAD_REQUEST);
+        if (errors.length > 0) {
+            throw new HttpException('Неверные параметры работы: ' + errors.join(', '), HttpStatus.BAD_REQUEST);
         }
 
+        const filePath = await this.worksService.saveFile(file, body.title);
+
         return this.worksService.insert({
-            title,
-            nomination,
-            year,
-            evaluation,
-            system,
-            adventureType: adventureType === 'scenario' || adventureType === 'decoration' ? adventureType : null,
+            ...work,
             filePath,
-            description,
         });
     }
 
@@ -118,5 +107,18 @@ export class WorksController {
         });
 
         stream.pipe(response);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('review')
+    async login(@Body() body) {
+        const work = await this.worksService.findOne(body.id);
+        return this.reviewsService.save({
+            text: body.text,
+            author: body.author,
+            positive: body.positive,
+            negative: body.negative,
+            work,
+        });
     }
 }

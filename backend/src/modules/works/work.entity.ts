@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Review } from '../reviews/review.entity';
 
 @Entity()
 export class Work {
@@ -7,6 +8,12 @@ export class Work {
 
   @Column()
   title: string;
+
+  @Column({ nullable: true })
+  imgUrl?: string;
+
+  @Column({ nullable: true })
+  finalUrl?: string;
 
   @Column()
   nomination: 'game' | 'adventure';
@@ -26,6 +33,13 @@ export class Work {
   @Column()
   filePath: string;
 
-  @Column()
-  description: string;
+  @Column({
+    type: 'longtext',
+    nullable: true,
+    name: 'description'
+  })
+  description?: string;
+
+  @OneToMany(type => Review, review => review.work, { cascade: ['insert', 'update'] })
+  reviews: Review[]
 }

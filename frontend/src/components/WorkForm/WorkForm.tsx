@@ -30,15 +30,16 @@ export function WorkForm(props: IProps) {
         year: '2020',
         nomination: 'game',
         evaluation: 0,
+        adventureType: 'null',
     });
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        const { title, nomination, evaluation, year, system, file, adventureType, description } = state;
+        const { title, nomination, evaluation, year, system, file, adventureType, description, imgUrl } = state;
 
-        if (!title || !nomination || !evaluation || !year || !system || !description) {
-            alert('Не все поля заполнены');//todo show field
+        if (!title || !nomination || !evaluation || !year || !system) {
+            alert('Не все поля заполнены');
             return;
         }
 
@@ -50,6 +51,8 @@ export function WorkForm(props: IProps) {
             system,
             file,
             description,
+            imgUrl,
+            finalUrl,
         }
 
         if (adventureType !== 'null') {
@@ -97,7 +100,7 @@ export function WorkForm(props: IProps) {
         }
     }
 
-    const { title, year, nomination, adventureType, evaluation, system, description } = state;
+    const { title, year, nomination, adventureType, evaluation, system, description, imgUrl, finalUrl } = state;
 
     return (
         <form className="WorkForm">
@@ -113,7 +116,29 @@ export function WorkForm(props: IProps) {
                 variant="outlined"
                 name="title"
                 onChange={onInputChange}
+                size='small'
             />
+            <TextField
+                id="work-image"
+                label="Обложка"
+                value={imgUrl}
+                helperText="Введите адрес картинки"
+                variant="outlined"
+                name="imgUrl"
+                onChange={onInputChange}
+                size='small'
+            />
+            <TextField
+                id="final-work"
+                label="Cсылка на итоговую версию игры"
+                value={finalUrl}
+                helperText="Введите адрес игры"
+                variant="outlined"
+                name="finalUrl"
+                onChange={onInputChange}
+                size='small'
+            />
+            <div className="WorkForm-Row">
             <FormControl variant="outlined">
                 <InputLabel id="work-year-label">Год конкурса</InputLabel>
                 <Select
@@ -131,6 +156,18 @@ export function WorkForm(props: IProps) {
                 </Select>
             </FormControl>
             <TextField
+                error={!evaluation || evaluation <= 0}
+                type="number"
+                id="work-evaluation"
+                label="Оценка"
+                value={evaluation}
+                variant="outlined"
+                name="evaluation"
+                size='small'
+                onChange={onInputChange}
+            />
+            </div>
+            <TextField
                 error={!system || system.length <= 0}
                 id="work-system"
                 label="Система"
@@ -138,19 +175,10 @@ export function WorkForm(props: IProps) {
                 helperText="Введите систему"
                 variant="outlined"
                 name="system"
+                size='small'
                 onChange={onInputChange}
             />
-            <TextField
-                error={!evaluation || evaluation <= 0}
-                type="number"
-                id="work-evaluation"
-                label="Оценка"
-                value={evaluation}
-                helperText="Введите оценку"
-                variant="outlined"
-                name="evaluation"
-                onChange={onInputChange}
-            />
+            <div className="WorkForm-Row">
             <FormControl variant="outlined">
                 <InputLabel id="work-nomination-label">Номинация</InputLabel>
                 <Select
@@ -182,15 +210,17 @@ export function WorkForm(props: IProps) {
                     </Select>
                 </FormControl> : null
             }
+            </div>
             <TextField
-                error={!description || description.length <= 0}
                 multiline
+                rowsMax={6}
                 id="work-description"
                 label="Описание"
                 value={description}
                 helperText="Введите описание"
                 variant="outlined"
                 name="description"
+                size='small'
                 onChange={onInputChange}
             />
             <Typography id="form-file" color="textPrimary">

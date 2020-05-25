@@ -1,4 +1,4 @@
-import { IWork, IWorkProps } from "../types/work";
+import { IWork, IWorkProps, IReview } from "../types/work";
 
 export function getCookie(name: string) {
     let matches = document.cookie.match(new RegExp(
@@ -33,7 +33,11 @@ export async function getWork(id: string): Promise<IWorkProps | null> {
 
 export async function postWork(work: IWork): Promise<void> {
     const formData = new FormData();
-    Object.entries(work).forEach(entry => formData.append(entry[0], entry[1]))
+    Object.entries(work).forEach(entry => {
+        if (entry[1]) {
+            formData.append(entry[0], entry[1]);
+        }
+    })
 
     const data = await fetch('/api/work', {
         method: 'POST',
@@ -43,12 +47,12 @@ export async function postWork(work: IWork): Promise<void> {
         }
     });
 
-    if (data.ok) { // если HTTP-статус в диапазоне 200-299
+    if (data.ok) {
         alert("Успешно загружено");
     } else {
-        // let json = await data.json();
+        let json = await data.json();
 
-        // alert("Ошибка: " + json.message);
+        alert("Ошибка: " + json.message);
         console.log(data);
     }
 }
@@ -71,12 +75,12 @@ export async function updateWork(work: Partial<IWork>): Promise<void> {
         }
     });
 
-    if (data.ok) { // если HTTP-статус в диапазоне 200-299
+    if (data.ok) {
         alert("Успешно загружено");
     } else {
-        // let json = await data.json();
+        let json = await data.json();
 
-        // alert("Ошибка: " + json.message);
+        alert("Ошибка: " + json.message);
         console.log(data);
     }
 }
@@ -106,6 +110,28 @@ export async function auth(login: string, password: string): Promise<{access_tok
             }),
             headers: {
                 'Content-Type': 'Application/json'
+            }
+        });
+
+        const res = await data.json();
+
+        return res;
+    } catch (e) {
+        return {};
+    }
+}
+
+export async function addReview(review: IReview, id: string) {
+    try {
+        const data = await fetch(`/api/review`, {
+            method: 'POST',
+            body: JSON.stringify({
+                ...review,
+                id,
+            }),
+            headers: {
+                'Content-Type': 'Application/json',
+                'Authorization': 'Bearer ' + getCookie('access_token'),
             }
         });
 

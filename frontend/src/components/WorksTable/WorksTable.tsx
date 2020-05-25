@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import {
     Table, TableBody, TableCell, TableContainer,
     TablePagination, TableRow, Paper,
@@ -20,14 +20,13 @@ interface IWorksTableProps {
     works: IWorkProps[];
 }
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             width: '100%',
         },
         paper: {
             width: '100%',
-            marginBottom: theme.spacing(2),
         },
         footer: {
             display: 'flex',

@@ -33,8 +33,8 @@ export class WorksService {
         return this.worksRepository.find();
     }
 
-    findOne(id: string): Promise<Work> {
-        return this.worksRepository.findOne(id);
+    findOne(id: number): Promise<Work> {
+        return this.worksRepository.findOne(id, { relations: ['reviews'] });
     }
 
     async insert(work: Work): Promise<void> {
@@ -45,7 +45,7 @@ export class WorksService {
         await this.worksRepository.update(work.id, work);
     }
 
-    async remove(id: string): Promise<void> {
+    async delete(id: number): Promise<void> {
         await this.worksRepository.delete(id);
     }
 
@@ -93,10 +93,10 @@ export class WorksService {
 
     getReadableStream(buffer: Buffer): Readable {
         const stream = new Readable();
-      
+
         stream.push(buffer);
         stream.push(null);
-      
+
         return stream;
-      }
+    }
 }
