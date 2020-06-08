@@ -2,9 +2,8 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/deepPurple';
 
 
-export const darkTheme = createMuiTheme({
+export const theme = createMuiTheme({
     palette: {
-        // type: 'dark',
         primary: purple,
     },
 });

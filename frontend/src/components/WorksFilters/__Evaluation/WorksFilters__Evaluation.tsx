@@ -1,11 +1,10 @@
 import React, { ChangeEvent } from "react";
-import Typography from '@material-ui/core/Typography';
 import { StyledSlider } from "./StyledSlider";
 
 import { useSelector, useDispatch } from "react-redux";
 import { updateFilters } from "../../../redux/actions";
 import { IStore } from "../../../redux/store";
-import { FormControl, InputLabel } from "@material-ui/core";
+import { InputLabel } from "@material-ui/core";
 
 function getStringRange(range: number[]) {
     return range[0] === range[1] ? range[0].toString() : `${range[0]}-${range[1]}`;
@@ -33,7 +32,7 @@ export function WorksFiltersEvaluation() {
                     valueLabelDisplay="auto"
                     aria-labelledby="evaluation-slider"
                     max={maxEvaluation}
-                    min={1}
+                    min={0}
                 />
         </div>
         ) : null;

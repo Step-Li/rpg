@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Body, HttpException, HttpStatus, Delete, Query, UseInterceptors, UploadedFile, HttpCode, Res, Put, UseGuards } from '@nestjs/common';
-import { WorksService } from './works.service';
-import { Work } from './work.entity';
+import { Controller, Get, Post, Body, HttpException, HttpStatus, Delete, Query, UseInterceptors, UploadedFile, Res, Put, UseGuards } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
+
+import { WorksService } from './works.service';
+import { ReviewsService } from '../reviews/reviews.service';
+import { Work } from './work.entity';
+
 import { JwtAuthGuard } from '../auth/jwt.auth.guard';
 
 import { translit } from '../../utils/translit';
-import { ReviewsService } from '../reviews/reviews.service';
 import { parseWork } from '../../utils/parseWork';
 
 @Controller()
@@ -32,7 +34,7 @@ export class WorksController {
         const work = await this.worksService.findOne(query.id);
         const filePath = work.filePath;
 
-        work.reviews.forEach(review => this.reviewsService.delete(review.rewiewId))
+        work.reviews.forEach(review => this.reviewsService.delete(review.reviewId))
 
         await this.worksService.delete(query.id);
         await this.worksService.deleteFile(filePath);
@@ -111,7 +113,7 @@ export class WorksController {
 
     @UseGuards(JwtAuthGuard)
     @Post('review')
-    async login(@Body() body) {
+    async addReview(@Body() body) {
         const work = await this.worksService.findOne(body.id);
         return this.reviewsService.save({
             text: body.text,
@@ -120,5 +122,11 @@ export class WorksController {
             negative: body.negative,
             work,
         });
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('review')
+    async deleteReview(@Query() query) {
+        return this.reviewsService.delete(query.id);
     }
 }

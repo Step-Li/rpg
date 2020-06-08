@@ -37,7 +37,7 @@ export class WorksService {
         return this.worksRepository.findOne(id, { relations: ['reviews'] });
     }
 
-    async insert(work: Work): Promise<void> {
+    async insert(work: Partial<Work>): Promise<void> {
         await this.worksRepository.insert(work);
     }
 

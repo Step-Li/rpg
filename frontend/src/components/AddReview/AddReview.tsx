@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent } from "react";
 import { Button, Card, CardContent, makeStyles, createStyles, TextField } from "@material-ui/core";
 import { addReview } from "../../api/api";
 import { useStoreState } from "../../hooks/useStoreState";
+import { IReview } from "../../types/work";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -32,7 +33,14 @@ const useStyles = makeStyles(() =>
         },
         text: {
             margin: '12px 0',
-        }
+            flexBasis: '50%',
+            '&:last-child:not(:first-child)': {
+                marginLeft: 8,
+            }
+        },
+        plusminus: {
+            display: 'flex',
+        },
     }),
 );
 
@@ -43,7 +51,7 @@ interface IProps {
 export function AddReview(props: IProps) {
     const classes = useStyles();
     const [clicked, setClicked] = useState(false);
-    const [state, setState] = useStoreState({
+    const [state, setState] = useStoreState<IReview>({
         author: '',
         text: '',
     });
@@ -71,6 +79,28 @@ export function AddReview(props: IProps) {
                             value={state.author}
                             onChange={changeHandler}
                         />
+                        <div className={classes.plusminus}>
+                            <TextField
+                                name="positive"
+                                variant="outlined"
+                                className={classes.text}
+                                multiline
+                                label="Плюсы"
+                                rows={5}
+                                value={state.positive}
+                                onChange={changeHandler}
+                            />
+                            <TextField
+                                name="negative"
+                                variant="outlined"
+                                className={classes.text}
+                                multiline
+                                label="Минусы"
+                                rows={5}
+                                value={state.negative}
+                                onChange={changeHandler}
+                            />
+                        </div>
                         <TextField
                             name="text"
                             variant="outlined"

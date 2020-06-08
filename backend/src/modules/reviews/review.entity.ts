@@ -4,18 +4,29 @@ import { Work } from '../works/work.entity';
 @Entity()
 export class Review {
   @PrimaryGeneratedColumn()
-  rewiewId?: number;
+  reviewId?: number;
 
-  @Column()
+  @Column({
+    type: 'longtext',
+    name: 'text'
+  })
   text: string;
 
   @Column()
   author: string;
 
-  @Column({ nullable: true })
+  @Column({
+    type: 'longtext',
+    nullable: true,
+    name: 'positive'
+  })
   positive?: string;
 
-  @Column({ nullable: true })
+  @Column({
+    type: 'longtext',
+    nullable: true,
+    name: 'negative'
+  })
   negative?: string;
 
   @ManyToOne(type => Work, work => work.reviews)

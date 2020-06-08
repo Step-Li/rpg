@@ -25,7 +25,7 @@ export function WorksTableRow(props: IWorkProps) {
     const isAdmin = useSelector((store: IStore) => store.isAdmin);
 
     const {
-        title, nomination, adventureType,
+        title, nomination, adventureType, author,
         evaluation, system, year, filePath, id
     } = props;
 
@@ -43,8 +43,11 @@ export function WorksTableRow(props: IWorkProps) {
             <TableCell component="th" scope="row" onClick={rowClickHandler}>
                 {title}
             </TableCell>
+            <TableCell onClick={rowClickHandler}>
+                {author}
+            </TableCell>
             <TableCell onClick={rowClickHandler}>{NOMINATIONS[nomination]}</TableCell>
-            <TableCell onClick={rowClickHandler}>{adventureType && ADVENTURES[adventureType]}</TableCell>
+            {/* <TableCell onClick={rowClickHandler}>{adventureType && ADVENTURES[adventureType]}</TableCell> */}
             <TableCell onClick={rowClickHandler}>{system}</TableCell>
             <TableCell onClick={rowClickHandler} align="right">{year}</TableCell>
             <TableCell onClick={rowClickHandler} align="right">{evaluation}</TableCell>

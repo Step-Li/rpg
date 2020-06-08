@@ -38,8 +38,8 @@ export function WorkCard(props: IWorkProps) {
                 </Typography>
                 <Typography variant="body2" component="p">
                     {(nomination === 'adventure' && adventureType) ? <>Тип приключения: {ADVENTURES[adventureType]} <br /></> : null}
-                        Система: {system} <br />
-                        Оценка: {evaluation} <br />
+                    {system ? <> Система: {system} <br /> </> : null}
+                    Оценка: {evaluation} <br />
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>

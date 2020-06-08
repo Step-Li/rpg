@@ -10,6 +10,9 @@ export class Work {
   title: string;
 
   @Column({ nullable: true })
+  author?: string;
+
+  @Column({ nullable: true })
   imgUrl?: string;
 
   @Column({ nullable: true })
@@ -24,8 +27,8 @@ export class Work {
   @Column()
   year: string;
 
-  @Column()
-  system: string;
+  @Column({ nullable: true })
+  system?: string;
 
   @Column()
   evaluation: number;

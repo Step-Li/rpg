@@ -19,8 +19,9 @@ interface HeadCell {
 
 const headCells: HeadCell[] = [
     { id: 'title', label: 'Название работы' },
+    { id: 'author', label: 'Автор' },
     { id: 'nomination', label: 'Номинация' },
-    { id: 'adventureType', label: 'Тип приключения' },
+    // { id: 'adventureType', label: 'Тип приключения' },
     { id: 'system', label: 'Система' },
     { id: 'year', label: 'Год конкурса', align: 'right' },
     { id: 'evaluation', label: 'Оценка', align: 'right' },

@@ -3,7 +3,7 @@ import 'typeface-roboto';
 import './App.scss';
 import { ArchivePage } from './components/ArchivePage/ArchivePage';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { darkTheme } from './assets/theme';
+import { theme } from './assets/theme';
 import { Header } from './components/Header/Header';
 import { Switch, Route } from 'react-router-dom';
 import { AuthorizationPanel } from './components/AuthorizationPanel/AuthorizationPanel';
@@ -15,7 +15,7 @@ import { Footer } from './components/Footer/Footer';
 
 function App() {
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={theme}>
       <Header />
         <Switch>
           <Route path='/archive' component={ArchivePage} />

@@ -17,7 +17,7 @@ export default function (store: IFilters = {}, action: IUpdateFiltersAction & IU
 
             return {
                 ...store,
-                evaluationRange: store.evaluationRange || [1, maxEvaluation],
+                evaluationRange: store.evaluationRange || [0, maxEvaluation],
                 maxEvaluation,
             };
         default:

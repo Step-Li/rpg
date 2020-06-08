@@ -1,7 +1,7 @@
 import { Work } from "../modules/works/work.entity";
 
 interface IGetWorkResult {
-    work?: Omit<Work, 'filePath'>;
+    work?: Omit<Work, 'filePath' | 'reviews' >;
     errors?: string[];
 }
 
@@ -9,7 +9,7 @@ export function parseWork(props: Partial<Work>): IGetWorkResult {
     const {
         title, nomination, year, evaluation,
         system, adventureType, description,
-        imgUrl, finalUrl, id,
+        imgUrl, finalUrl, id, author,
     } = props;
 
     const errors = [];
@@ -30,10 +30,6 @@ export function parseWork(props: Partial<Work>): IGetWorkResult {
         errors.push('не указана оценка');
     }
 
-    if (!system) {
-        errors.push('нет системы');
-    }
-
     if (errors.length > 0) {
         return {
             errors,
@@ -44,6 +40,7 @@ export function parseWork(props: Partial<Work>): IGetWorkResult {
         work: {
             id,
             title,
+            author,
             nomination,
             year,
             evaluation,
@@ -52,7 +49,7 @@ export function parseWork(props: Partial<Work>): IGetWorkResult {
             description,
             imgUrl,
             finalUrl,
-            reviews: [],
+            // reviews: [],
         },
         errors: [],
     };

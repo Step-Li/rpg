@@ -57,7 +57,9 @@ export function ArchivePage() {
             <MetaTags>
                 <title>Архив работ - RPG-Кашевар</title>
                 <meta name="description" content={
-                    `Полное собрание работ участников конкурса разных годов. Здесь есть приключения на любой вкус. Можно совершенно бесплатно найти новую игру с любимой системой правил и тематикой.`} />
+                    `Полное собрание работ участников конкурса разных годов.
+                    Здесь есть приключения на любой вкус. Можно совершенно бесплатно
+                    найти новую игру с любимой системой правил и тематикой.`} />
             </MetaTags>
             <Paper variant='outlined' className={classes.breadcrumbsPaper}>
                 <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">

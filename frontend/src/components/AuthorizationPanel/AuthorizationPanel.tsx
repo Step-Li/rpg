@@ -14,7 +14,7 @@ export function AuthorizationPanel() {
 
     const authorize = async () => {
         const authData = await auth(login, password);
-        if (authData.access_token) {
+        if (authData && authData.access_token) {
             document.cookie = `access_token=${authData.access_token}`;
             history.push("/archive");
         }

@@ -8,16 +8,16 @@ import { WorksFiltersNomination } from "./__Nomination/WorksFilters__Nomination"
 import { WorksFiltersSystem } from "./__System/WorksFilters__System";
 
 import './WorksFilters.scss';
-import { WorksFiltersAdventureType } from "./__AdventureType/WorksFilters__AdventureType";
+// import { WorksFiltersAdventureType } from "./__AdventureType/WorksFilters__AdventureType";
 
 export function WorksFilters() {
     return (
         <Card variant="outlined" className="WorksFilters">
             <CardContent>
+                <WorksFiltersNomination />
                 <WorksFiltersSystem />
                 <WorksFiltersYear />
-                <WorksFiltersNomination />
-                <WorksFiltersAdventureType />
+                {/* <WorksFiltersAdventureType /> */}
                 <WorksFiltersEvaluation />
             </CardContent>
         </Card>

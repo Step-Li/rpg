@@ -1,5 +1,5 @@
 import React from "react";
-import { GridList, GridListTile, makeStyles, createStyles } from "@material-ui/core";
+import { makeStyles, createStyles } from "@material-ui/core";
 import { IReview } from "../../types/work";
 import { ReviewCard } from "../ReviewCard/ReviewCard";
 import { useSelector } from "react-redux";
@@ -10,6 +10,7 @@ const useStyles = makeStyles(() =>
     createStyles({
         root: {
             width: '100%',
+            marginTop: 8,
         },
         gridList: {
             flexWrap: 'nowrap',
@@ -30,18 +31,12 @@ export default function ReviewsList(props: IProps) {
 
     return (
         <div className={classes.root}>
-            <GridList cellHeight="auto" className={classes.gridList} cols={2.5}>
-                {props.reviews.map(review => (
-                    <GridListTile key={review.author}>
-                        <ReviewCard {...review} />
-                    </GridListTile>
-                ))}
-                {isAdmin ? (
-                    <GridListTile>
-                        <AddReview workId={props.workId} />
-                    </GridListTile>
-                ) : null}
-            </GridList>
+            {props.reviews.map(review => (
+                <ReviewCard {...review} />
+            ))}
+            {isAdmin ? (
+                <AddReview workId={props.workId} />
+            ) : null}
         </div>
     );
 }

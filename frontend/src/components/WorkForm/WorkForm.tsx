@@ -5,7 +5,7 @@ import { Typography, Button, MenuItem, Select, InputLabel, FormControl, TextFiel
 
 import { IWorkProps, IWork } from "../../types/work";
 import { useStoreState } from "../../hooks/useStoreState";
-import { postWork, updateWork } from "../../api/api";
+import { postWork } from "../../api/api";
 import { setNeedWorksFetch } from "../../redux/actions";
 
 import './WorkForm.scss';
@@ -27,7 +27,7 @@ interface IStore extends Omit<Partial<IWork>, 'adventureType'> {
 export function WorkForm(props: IProps) {
     const dispatch = useDispatch();
     const [state, setState] = useStoreState<IStore>(props.editableWork || {
-        year: '2020',
+        year: '2019',
         nomination: 'game',
         evaluation: 0,
         adventureType: 'null',
@@ -36,15 +36,16 @@ export function WorkForm(props: IProps) {
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        const { title, nomination, evaluation, year, system, file, adventureType, description, imgUrl } = state;
+        const { title, author, nomination, evaluation, year, system, file, adventureType, description, imgUrl } = state;
 
-        if (!title || !nomination || !evaluation || !year || !system) {
+        if (!title || !nomination || evaluation === undefined || !year) {
             alert('Не все поля заполнены');
             return;
         }
 
         const work: IWork = {
             title,
+            author,
             nomination,
             evaluation,
             year,
@@ -62,7 +63,7 @@ export function WorkForm(props: IProps) {
         if (props.editableWork?.id) {
             work.id = props.editableWork.id;
 
-            updateWork(work).then(() => {
+            postWork(work, 'PUT').then(() => {
                 dispatch(setNeedWorksFetch(true));
                 if (props.onWorkPost) props.onWorkPost();
             });
@@ -74,7 +75,7 @@ export function WorkForm(props: IProps) {
             return;
         }
 
-        postWork(work).then(() => {
+        postWork(work, 'POST').then(() => {
             dispatch(setNeedWorksFetch(true));
             if (props.onWorkPost) props.onWorkPost();
         });
@@ -100,7 +101,7 @@ export function WorkForm(props: IProps) {
         }
     }
 
-    const { title, year, nomination, adventureType, evaluation, system, description, imgUrl, finalUrl } = state;
+    const { title, author, year, nomination, adventureType, evaluation, system, description, imgUrl, finalUrl } = state;
 
     return (
         <form className="WorkForm">
@@ -112,9 +113,17 @@ export function WorkForm(props: IProps) {
                 id="work-title"
                 label="Название работы"
                 value={title}
-                helperText="Введите название"
                 variant="outlined"
                 name="title"
+                onChange={onInputChange}
+                size='small'
+            />
+            <TextField
+                id="work-author"
+                label="Автор"
+                value={author}
+                variant="outlined"
+                name="author"
                 onChange={onInputChange}
                 size='small'
             />
@@ -156,7 +165,7 @@ export function WorkForm(props: IProps) {
                 </Select>
             </FormControl>
             <TextField
-                error={!evaluation || evaluation <= 0}
+                error={evaluation === undefined || evaluation < 0}
                 type="number"
                 id="work-evaluation"
                 label="Оценка"
@@ -168,11 +177,9 @@ export function WorkForm(props: IProps) {
             />
             </div>
             <TextField
-                error={!system || system.length <= 0}
                 id="work-system"
                 label="Система"
                 value={system}
-                helperText="Введите систему"
                 variant="outlined"
                 name="system"
                 size='small'
@@ -217,7 +224,6 @@ export function WorkForm(props: IProps) {
                 id="work-description"
                 label="Описание"
                 value={description}
-                helperText="Введите описание"
                 variant="outlined"
                 name="description"
                 size='small'
